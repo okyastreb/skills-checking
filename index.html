@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Чайна Лавка — Реєстрація</title>
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --tea-dark:   #1a0a00;
+      --tea-brown:  #4a2c0a;
+      --tea-amber:  #c8701a;
+      --tea-gold:   #e8b84b;
+      --tea-cream:  #f7ead8;
+      --tea-mist:   #fdf6ec;
+      --steam:      rgba(232,184,75,.18);
+      --radius:     16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--tea-dark);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% 0%,   rgba(200,112,26,.22) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 100%,  rgba(74,44,10,.6)   0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='40'  cy='40'  r='1.2' fill='%23c8701a22'/%3E%3Ccircle cx='120' cy='80'  r='.8'  fill='%23e8b84b18'/%3E%3Ccircle cx='70'  cy='150' r='1'   fill='%23c8701a1a'/%3E%3Ccircle cx='160' cy='30'  r='.6'  fill='%23e8b84b22'/%3E%3Ccircle cx='180' cy='160' r='1.4' fill='%23c8701a1a'/%3E%3C/svg%3E");
+      font-family: 'Georgia', 'Times New Roman', serif;
+      padding: 2rem 1rem;
+    }
+
+    /* ─── Floating Tea Leaves (decorative) ────────────────────── */
+    .leaves {
+      position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
+    }
+    .leaf {
+      position: absolute;
+      width: 28px; height: 14px;
+      border-radius: 50% 0 50% 0;
+      opacity: .08;
+      animation: float linear infinite;
+    }
+    .leaf:nth-child(1)  { background:#c8701a; left:8%;  animation-duration:14s; animation-delay:0s;   width:22px; height:11px; }
+    .leaf:nth-child(2)  { background:#e8b84b; left:22%; animation-duration:18s; animation-delay:3s;   width:18px; height:9px;  }
+    .leaf:nth-child(3)  { background:#a0581a; left:55%; animation-duration:12s; animation-delay:7s;   }
+    .leaf:nth-child(4)  { background:#c8701a; left:75%; animation-duration:16s; animation-delay:1s;   width:24px; height:12px; }
+    .leaf:nth-child(5)  { background:#e8b84b; left:90%; animation-duration:20s; animation-delay:5s;   width:20px; height:10px; }
+
+    @keyframes float {
+      0%   { transform: translateY(-40px) rotate(0deg);   opacity:.08; }
+      50%  { opacity:.12; }
+      100% { transform: translateY(110vh)  rotate(360deg); opacity:0;   }
+    }
+
+    /* ─── Card ─────────────────────────────────────────────────── */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(160deg, #2b1200 0%, #1f0d00 100%);
+      border: 1px solid rgba(232,184,75,.22);
+      border-radius: var(--radius);
+      box-shadow:
+        0 0 0 1px rgba(200,112,26,.08),
+        0 8px 40px rgba(0,0,0,.6),
+        inset 0 1px 0 rgba(232,184,75,.12);
+      overflow: hidden;
+    }
+
+    /* top accent bar */
+    .card::before {
+      content: '';
+      display: block;
+      height: 4px;
+      background: linear-gradient(90deg, var(--tea-brown), var(--tea-amber), var(--tea-gold), var(--tea-amber), var(--tea-brown));
+    }
+
+    /* ─── Header ────────────────────────────────────────────────── */
+    .card-header {
+      padding: 2.4rem 2.4rem 1.6rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .tea-cup-icon {
+      display: inline-block;
+      font-size: 3.2rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 12px rgba(232,184,75,.5));
+      animation: steam-bob 3s ease-in-out infinite;
+    }
+    @keyframes steam-bob {
+      0%,100% { transform: translateY(0);   }
+      50%      { transform: translateY(-6px); }
+    }
+
+    .steam-lines {
+      display: flex; justify-content: center; gap: 8px;
+      margin: 4px 0 12px;
+      height: 24px;
+    }
+    .steam-lines span {
+      display: block;
+      width: 2px;
+      background: linear-gradient(to top, transparent, rgba(232,184,75,.55), transparent);
+      border-radius: 2px;
+      animation: steam-rise 2.4s ease-in-out infinite;
+    }
+    .steam-lines span:nth-child(2) { animation-delay: .4s; }
+    .steam-lines span:nth-child(3) { animation-delay: .8s; }
+    @keyframes steam-rise {
+      0%   { transform: scaleY(.4) translateY(0);    opacity:0;   }
+      40%  { opacity: 1;  }
+      100% { transform: scaleY(1.4) translateY(-8px); opacity: 0;  }
+    }
+
+    .card-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: var(--tea-gold);
+      text-shadow: 0 0 20px rgba(232,184,75,.4);
+    }
+    .card-subtitle {
+      margin-top: .45rem;
+      font-size: .88rem;
+      color: rgba(247,234,216,.5);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    /* ─── Divider ───────────────────────────────────────────────── */
+    .divider {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0 2.4rem;
+      margin-bottom: 1.6rem;
+    }
+    .divider::before, .divider::after {
+      content:''; flex:1; height:1px;
+      background: linear-gradient(to right, transparent, rgba(232,184,75,.25), transparent);
+    }
+    .divider-leaf { font-size: .9rem; opacity: .55; }
+
+    /* ─── Form ──────────────────────────────────────────────────── */
+    form { padding: 0 2.4rem 2.4rem; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      margin-bottom: 1.1rem;
+    }
+
+    label {
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--tea-gold);
+      font-family: 'Georgia', serif;
+      opacity: .85;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      pointer-events: none;
+      opacity: .55;
+    }
+
+    input {
+      width: 100%;
+      padding: .72rem 1rem .72rem 2.4rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(232,184,75,.18);
+      border-radius: 10px;
+      color: var(--tea-cream);
+      font-size: .95rem;
+      font-family: inherit;
+      transition: border-color .25s, background .25s, box-shadow .25s;
+      outline: none;
+    }
+    input::placeholder { color: rgba(247,234,216,.3); }
+
+    input:hover {
+      border-color: rgba(232,184,75,.35);
+      background: rgba(255,255,255,.06);
+    }
+    input:focus {
+      border-color: var(--tea-amber);
+      background: rgba(200,112,26,.08);
+      box-shadow: 0 0 0 3px rgba(200,112,26,.15), inset 0 1px 3px rgba(0,0,0,.3);
+    }
+
+    /* address textarea */
+    .field-address textarea {
+      width: 100%;
+      padding: .72rem 1rem .72rem 2.4rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(232,184,75,.18);
+      border-radius: 10px;
+      color: var(--tea-cream);
+      font-size: .95rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 72px;
+      transition: border-color .25s, background .25s, box-shadow .25s;
+      outline: none;
+      line-height: 1.5;
+    }
+    .field-address textarea::placeholder { color: rgba(247,234,216,.3); }
+    .field-address textarea:hover  { border-color: rgba(232,184,75,.35); background: rgba(255,255,255,.06); }
+    .field-address textarea:focus  { border-color: var(--tea-amber); background: rgba(200,112,26,.08);
+      box-shadow: 0 0 0 3px rgba(200,112,26,.15), inset 0 1px 3px rgba(0,0,0,.3); }
+    .field-address .input-icon { top: 14px; transform: none; }
+
+    /* password strength bar */
+    .strength-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.08);
+      margin-top: .35rem;
+      overflow: hidden;
+    }
+    .strength-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: width .4s, background .4s;
+    }
+
+    /* ─── Checkbox ──────────────────────────────────────────────── */
+    .check-field {
+      display: flex; align-items: flex-start; gap: .7rem;
+      margin-bottom: 1.4rem;
+    }
+    .check-field input[type="checkbox"] {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      padding: 0;
+      accent-color: var(--tea-amber);
+      margin-top: 2px;
+    }
+    .check-field label {
+      font-size: .82rem;
+      letter-spacing: .02em;
+      text-transform: none;
+      color: rgba(247,234,216,.55);
+      line-height: 1.5;
+    }
+    .check-field label a { color: var(--tea-gold); text-decoration: underline dotted; }
+
+    /* ─── Button ────────────────────────────────────────────────── */
+    .btn-register {
+      width: 100%;
+      padding: .95rem 2rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--tea-brown) 0%, var(--tea-amber) 50%, var(--tea-gold) 100%);
+      background-size: 200% 200%;
+      background-position: 0% 50%;
+      color: #fff;
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background-position .5s, transform .15s, box-shadow .3s;
+      box-shadow: 0 4px 20px rgba(200,112,26,.35);
+    }
+    .btn-register:hover {
+      background-position: 100% 50%;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(200,112,26,.5);
+    }
+    .btn-register:active { transform: translateY(0); }
+    .btn-register::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 0%, rgba(255,255,255,.12) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform .5s;
+    }
+    .btn-register:hover::after { transform: translateX(100%); }
+
+    /* ─── Footer ─────────────────────────────────────────────────── */
+    .card-footer {
+      padding: 1.2rem 2.4rem 2rem;
+      text-align: center;
+      font-size: .83rem;
+      color: rgba(247,234,216,.4);
+    }
+    .card-footer a { color: var(--tea-gold); text-decoration: none; }
+    .card-footer a:hover { text-decoration: underline; }
+
+    /* ─── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 500px) {
+      .row { grid-template-columns: 1fr; }
+      .card-header { padding: 2rem 1.6rem 1.4rem; }
+      form { padding: 0 1.6rem 1.8rem; }
+      .divider { padding: 0 1.6rem; }
+      .card-footer { padding: 1rem 1.6rem 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- floating leaves -->
+  <div class="leaves" aria-hidden="true">
+    <div class="leaf"></div>
+    <div class="leaf"></div>
+    <div class="leaf"></div>
+    <div class="leaf"></div>
+    <div class="leaf"></div>
+  </div>
+
+  <div class="card" role="main">
+
+    <!-- ── Header ───────────────────────────────────────── -->
+    <div class="card-header">
+      <div class="tea-cup-icon" aria-hidden="true">🍵</div>
+      <div class="steam-lines" aria-hidden="true">
+        <span style="height:18px"></span>
+        <span style="height:24px"></span>
+        <span style="height:16px"></span>
+      </div>
+      <h1 class="card-title">Чайна Лавка</h1>
+      <p class="card-subtitle">Приєднуйтесь до нашої спільноти</p>
+    </div>
+
+    <!-- ── Decorative divider ─────────────────────────── -->
+    <div class="divider" aria-hidden="true">
+      <span class="divider-leaf">🍃</span>
+    </div>
+
+    <!-- ── Registration Form ─────────────────────────── -->
+    <form id="registerForm" novalidate>
+
+      <!-- Name row -->
+      <div class="row">
+        <div class="field">
+          <label for="firstName">Ім'я</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">✦</span>
+            <input id="firstName" name="firstName" type="text"
+                   placeholder="Олена" autocomplete="given-name" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="lastName">Прізвище</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">✦</span>
+            <input id="lastName" name="lastName" type="text"
+                   placeholder="Коваленко" autocomplete="family-name" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">Електронна пошта</label>
+        <div class="input-wrap">
+          <span class="input-icon" aria-hidden="true">✉</span>
+          <input id="email" name="email" type="email"
+                 placeholder="olena@example.com" autocomplete="email" required />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <label for="password">Пароль</label>
+        <div class="input-wrap">
+          <span class="input-icon" aria-hidden="true">🔑</span>
+          <input id="password" name="password" type="password"
+                 placeholder="Мінімум 8 символів" autocomplete="new-password" required
+                 oninput="updateStrength(this.value)" />
+        </div>
+        <div class="strength-bar" title="Надійність пароля">
+          <div class="strength-bar-fill" id="strengthFill"></div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="field field-address">
+        <label for="address">Адреса проживання</label>
+        <div class="input-wrap">
+          <span class="input-icon" aria-hidden="true">📍</span>
+          <textarea id="address" name="address"
+                    placeholder="вул. Чайна, 7, кв. 3&#10;Київ, 01001"
+                    autocomplete="street-address" required rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- Consent -->
+      <div class="check-field">
+        <input id="consent" name="consent" type="checkbox" required />
+        <label for="consent">
+          Я погоджуюся з
+          <a href="#" onclick="return false">умовами використання</a>
+          та
+          <a href="#" onclick="return false">політикою конфіденційності</a>
+          Чайної Лавки
+        </label>
+      </div>
+
+      <button type="submit" class="btn-register">
+        Відкрити свій чайний шлях ✦
+      </button>
+    </form>
+
+    <div class="card-footer">
+      Вже маєте акаунт? &nbsp;<a href="#">Увійти</a>
+    </div>
+  </div>
+
+  <script>
+    /* ── Password strength indicator ── */
+    function updateStrength(val) {
+      const fill = document.getElementById('strengthFill');
+      let score = 0;
+      if (val.length >= 8)  score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      const widths = ['0%', '25%', '50%', '75%', '100%'];
+      const colors = ['transparent', '#e74c3c', '#e8b84b', '#a8c96b', '#5cb85c'];
+      fill.style.width  = widths[score];
+      fill.style.background = colors[score];
+    }
+
+    /* ── Form submit ── */
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const required = this.querySelectorAll('[required]');
+      let valid = true;
+
+      required.forEach(field => {
+        if (field.type === 'checkbox' ? !field.checked : !field.value.trim()) {
+          valid = false;
+          const wrap = field.closest('.input-wrap') || field.closest('.check-field');
+          if (wrap) {
+            wrap.style.animation = 'none';
+            wrap.offsetHeight;
+            wrap.style.animation = 'shake .35s ease';
+          }
+          field.focus();
+        }
+      });
+
+      if (!valid) return;
+
+      /* success feedback */
+      const btn = this.querySelector('.btn-register');
+      btn.textContent = '🍃 Ласкаво просимо до спільноти!';
+      btn.style.background = 'linear-gradient(135deg, #2d6a2d, #5cb85c)';
+      btn.disabled = true;
+    });
+  </script>
+
+  <style>
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+  </style>
+</body>
+</html>
